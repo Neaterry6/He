@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VANEA AI Chatbox</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: #0d0d0d;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            border:solid 10px #FFFF66;
+            border-radius:10px
+    }
+        #chat-container {
+            width: 400px;
+            height: 600px;
+            background: #1a1a1a;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        #header {
+            text-align: center;
+            padding: 10px 0;
+            background:;
+            font-size: 30px;
+            font-weight: bold;
+            margin-top:60px;
+            text-shadow:
+             0 0 7px #FFFF66,
+    0 0 9px #ff3300,
+    0 0 8px #FF009F;
+            
+            animation:rotation 10s infinite;
+       
+            
+        }
+    @keyframes rotation{
+        from {
+            transform:rotate(0deg)
+        }
+        to{
+            transform:rotate(360deg)
+        }
+    }
+        #subheader {
+            text-align: center;
+            font-size: 0.9rem;
+            padding: 5px;
+            color: #ccc;
+        }
+        #button-container {
+            display: flex;
+            justify-content: space-evenly;
+            padding: 10px;
+            background: #141414;
+        }
+        .option-button {
+            padding: 8px 12px;
+            background: linear-gradient(45deg, #3333ff, #66ffcc);
+            border: none;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin:3px;
+            box-shadow:
+              0 0 10px #FFFF66,
+    0 0 5px #ff3300,
+    0 0 5px #FF009F;
+        }
+        .option-button:hover {
+            background: linear-gradient(45deg, #66ffcc, #3333ff);
+        }
+        #chat-box {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: #1a1a1a;
+        }
+        .message {
+            margin: 10px 0;
+            display: inline-block;
+            max-width: 80%;
+            padding: 10px;
+            border-radius: 12px;
+            line-height: 1.4;
+        }
+        .user-message {
+            align-self: flex-end;
+            background: #00cc99;
+            color: black;
+            text-align: right;
+        }
+        .bot-message {
+            align-self: flex-start;
+            background: #3333ff;
+            color: white;
+        }
+        #input-container {
+            display: flex;
+            padding: 10px;
+            background: #0d0d0d;
+            border:solid 10px #FFFF66;
+            border-radius:20px;
+            box-shadow:0 0 10px #FFFF66,
+    0 0 15px #ff3300,
+    0 0 24px #FF009F;
+            
+        }
+        #user-input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 15px;
+            background: #333;
+            color: white;
+            outline: none;
+            box-shadow:
+              0 0 7px #FFFF66,
+    0 0 9px #ff3300,
+    0 0 8px #FF009F;
+        }
+        #send-button {
+            padding: 10px 20px;
+            margin-left: 10px;
+            background: linear-gradient(45deg, #66ffcc, #3366ff);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            box-shadow:
+              0 0 7px #FFFF66,
+    0 0 9px #ff3300,
+    0 0 8px #FF009F;
+        }
+        #send-button:hover {
+            background: linear-gradient(45deg, #3366ff, #66ffcc);
+        }
+    </style>
+</head>
+<body>
+    
+<div id="chat-container">
+    <div id="header">VANEA AI</div>
+    <div id="subheader">Experience the next generation of AI conversation</div>
+    <div id="button-container">
+        <button class="option-button" onclick="quickMessage('Tell me a joke')">Tell me a joke</button>
+        <button class="option-button" onclick="quickMessage('What can you do?')">What can you do?</button>
+        <button class="option-button" onclick="quickMessage('Write a story')">Write a story</button>
+        <button class="option-button" onclick="quickMessage('Technical help')">Technical help</button>
+    </div>
+    <div id="chat-box"></div>
+    <div id="input-container">
+        <input type="text" id="user-input" placeholder="Type a message..." />
+        <button id="send-button">Send</button>
+    </div>
+</div>
+
+<script>
+    const apiUrl = "https://terry-em3l.onrender.com?query={}";
+
+    const sendButton = document.getElementById('send-button');
+    const userInput = document.getElementById('user-input');
+    const chatBox = document.getElementById('chat-box');
+
+    function addMessage(content, type) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', type);
+        messageDiv.textContent = content;
+        chatBox.appendChild(messageDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function sendMessage(userText) {
+        if (!userText) return;
+
+        addMessage(userText, 'user-message');
+        userInput.value = '';
+
+        const queryUrl = apiUrl.replace("{}", encodeURIComponent(userText));
+
+        fetch(queryUrl)
+            .then(response => response.json())
+            .then(data => {
+                const botReply = data.reply || "I'm sorry, I didn't understand that.";
+                addMessage(botReply, 'bot-message');
+            })
+            .catch(() => {
+                addMessage("Error: Unable to connect to the server.", 'bot-message');
+            });
+    }
+
+    sendButton.addEventListener('click', () => {
+        sendMessage(userInput.value.trim());
+    });
+
+    userInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendMessage(userInput.value.trim());
+        }
+    });
+
+    function quickMessage(message) {
+        userInput.value = message;
+        sendMessage(message);
+    }
+</script>
+
+</body>
+</html>
