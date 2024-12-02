@@ -1,0 +1,22 @@
+{
+  "name": "vanea-ai",
+  "version": "1.0.0",
+  "description": "VANEA AI - An AI-powered assistant using Google's Gemini API",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "author": "Ayanfe",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.5.1",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "google-generativeai": "^1.0.0" 
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
