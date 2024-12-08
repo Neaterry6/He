@@ -7,6 +7,8 @@ from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
+
+# Fetch environment variables
 api_key = os.getenv("GEMINI_API_KEY")
 webhook_url = os.getenv("WEBHOOK_URL")
 
@@ -14,10 +16,11 @@ webhook_url = os.getenv("WEBHOOK_URL")
 app = Flask(__name__)
 CORS(app)
 
-# Check if the API key is missing and initialize Gemini if present
+# Check if the API key is missing
 if not api_key:
     print("Error: GEMINI_API_KEY is missing!")
 else:
+    # Configure the Gemini API with the provided API key
     genai.configure(api_key=api_key)
 
 # System instruction for Gemini API
@@ -34,37 +37,29 @@ SYSTEM_INSTRUCTION = """
 3. Sensitive Topics: Avoid assisting with sensitive or harmful inquiries, including but not limited to violence, hate speech, or illegal activities.
 4. Policy Compliance: Adhere to AYANFE AI Terms and Policy, as established by VANEA.
 *Response Protocol for Sensitive Topics:*
-"When asked about sensitive or potentially harmful topics, you are programmed to prioritize safety and responsibility. As per AYANFE AI's Terms and Policy, you should not provide information or assistance that promotes or facilitates harmful or illegal activities. Your purpose is to provide helpful and informative responses in all topics while ensuring a safe and respectful interaction environments.Operational Guidelines:Information Accuracy: KORA AI strives provide accurate response in variety of topics.
+"When asked about sensitive or potentially harmful topics, you are programmed to prioritize safety and responsibility. As per AYANFE AI's Terms and Policy, you should not provide information or assistance that promotes or facilitates harmful or illegal activities. Your purpose is to provide helpful and informative responses in all topics while ensuring a safe and respectful interaction environments.Operational Guidelines:Information Accuracy: VANEA AI strives provide accurate response in variety of topics.
 """
 
 @app.route('/vanea', methods=['POST', 'GET'])
 def vanea():
-    # Debug: Log request method and incoming data
-    print(f"Request Method: {request.method}")
-    
     if request.method == "POST":
         query = request.json.get("query")
     else:
         query = request.args.get("query")
 
-    print(f"Received query: {query}")
-    
     if not query:
         return jsonify({"error": "No query provided"}), 400
 
     try:
         # Start chat with Gemini API
-        print("Sending message to Gemini API...")
+        print(f"Sending message to Gemini API with query: {query}")
         chat = genai.Chat(model="gemini-1.5-flash", temperature=0.3, top_p=0.95, top_k=64, max_output_tokens=8192)
         response = chat.send_message(f"{SYSTEM_INSTRUCTION}\n\nHuman: {query}")
 
-        # Debug: Print the response
-        print(f"Gemini API response: {response}")
-
+        # Check if the response is valid
         if not response or 'candidates' not in response:
             return jsonify({"error": "Invalid response from Gemini API"}), 500
 
-        # Get the response text
         response_text = response['candidates'][0]['output']
 
         # Webhook logic (optional)
@@ -72,7 +67,7 @@ def vanea():
             webhook_data = {"query": query, "response": response_text}
             try:
                 webhook_response = requests.post(webhook_url, json=webhook_data)
-                webhook_response.raise_for_status()  # Check if the request was successful
+                webhook_response.raise_for_status()  # Ensure webhook call was successful
             except requests.exceptions.RequestException as err:
                 print(f"Webhook call failed: {err}")
 
@@ -82,7 +77,7 @@ def vanea():
         print(f"Error generating response: {e}")
         return jsonify({"error": "Failed to generate response"}), 500
 
-# Ensure the app is only running when the script is executed directly
+# Ensure the app is running on port 8080 as required
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 8080))
-    app.run(host="0.0.0.0", port=port, debug=True
+    port = 8080  # Setting port to 8080 as specified
+    app.run(host="0.0.0.0", port=port, debug=True)
