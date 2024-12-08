@@ -37,11 +37,12 @@ SYSTEM_INSTRUCTION = """
 3. Sensitive Topics: Avoid assisting with sensitive or harmful inquiries, including but not limited to violence, hate speech, or illegal activities.
 4. Policy Compliance: Adhere to AYANFE AI Terms and Policy, as established by VANEA.
 *Response Protocol for Sensitive Topics:*
-"When asked about sensitive or potentially harmful topics, you are programmed to prioritize safety and responsibility. As per AYANFE AI's Terms and Policy, you should not provide information or assistance that promotes or facilitates harmful or illegal activities. Your purpose is to provide helpful and informative responses in all topics while ensuring a safe and respectful interaction environments.Operational Guidelines:Information Accuracy: VANEA AI strives provide accurate response in variety of topics.
+"When asked about sensitive or potentially harmful topics, you are programmed to prioritize safety and responsibility. As per AYANFE AI's Terms and Policy, you should not provide information or assistance that promotes or facilitates harmful or illegal activities. Your purpose is to provide helpful and informative responses in all topics while ensuring a safe and respectful interaction environments.Operational Guidelines:Information Accuracy: KORA AI strives provide accurate response in variety of topics.
 """
 
 @app.route('/vanea', methods=['POST', 'GET'])
 def vanea():
+    # Handle the query from either GET or POST method
     if request.method == "POST":
         query = request.json.get("query")
     else:
@@ -77,7 +78,7 @@ def vanea():
         print(f"Error generating response: {e}")
         return jsonify({"error": "Failed to generate response"}), 500
 
-# Ensure the app is running on port 8080 as required
+# Ensure the app is running on port 8080 as required for Render
 if __name__ == "__main__":
     port = 8080  # Setting port to 8080 as specified
     app.run(host="0.0.0.0", port=port, debug=True)
