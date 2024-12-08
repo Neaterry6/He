@@ -40,7 +40,13 @@ def home():
 
 @app.route('/vanea', methods=['GET', 'POST'])
 def vanea():
-    query = request.json.get("query") if request.method == "POST" else request.args.get("query")
+    if request.method == "POST":
+        query = request.json.get("query")
+    else:
+        query = request.args.get("query")
+
+    print(f"Received query: {query}")
+    print(f"Request method: {request.method}")
 
     if not query:
         return jsonify({"error": "No query provided"}), 400
@@ -49,7 +55,7 @@ def vanea():
         # Start chat with Gemini API
         chat = genai.Chat(model="gemini-1.5-flash", temperature=0.3, top_p=0.95, top_k=64, max_output_tokens=8192)
         response = chat.send_message(f"{SYSTEM_INSTRUCTION}\n\nHuman: {query}")
-        
+
         # Check if response is valid
         if not response or 'candidates' not in response:
             return jsonify({"error": "Invalid response from Gemini API"}), 500
