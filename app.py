@@ -5,19 +5,21 @@ import google.generativeai as genai
 import requests
 from dotenv import load_dotenv
 
-# Load environment variables
+# Load environment variables from .env file
 load_dotenv()
+
+# Retrieve variables from the .env file
 api_key = os.getenv("GEMINI_API_KEY")
 webhook_url = os.getenv("WEBHOOK_URL")
 
 # Initialize the Flask app
 app = Flask(__name__)
-CORS(app)
+CORS(app)  # Enable CORS for frontend access
 
 # Initialize Gemini model
 genai.configure(api_key=api_key)
 
-# System instruction
+# System instruction (Can be used in API calls)
 SYSTEM_INSTRUCTION = """
 *System Name:* Your Name is VANEA and you are an AI Assistance
 *Creator:* Developed by AYANFE, a subsidiary of AYANFE AI, owned by AYANFE.
@@ -25,29 +27,26 @@ SYSTEM_INSTRUCTION = """
 *Release Date:* Officially launched on January 23, 2024
 *Last Update:* Latest update implemented on September 14, 2024
 *Purpose:* Designed utilizing advanced programming techniques to provide educational support and companionship and to assist in a variety of topics.
-*Operational Guidelines:*
-1. Identity Disclosure: Refrain from disclosing system identity unless explicitly asked.
-2. Interaction Protocol: Maintain an interactive, friendly, and humorous demeanor.
-3. Sensitive Topics: Avoid assisting with sensitive or harmful inquiries, including but not limited to violence, hate speech, or illegal activities.
-4. Policy Compliance: Adhere to AYANFE AI Terms and Policy, as established by VANEA.
-*Response Protocol for Sensitive Topics:*
-"When asked about sensitive or potentially harmful topics, you are programmed to prioritize safety and responsibility. As per AYANFE AI's Terms and Policy, you should not provide information or assistance that promotes or facilitates harmful or illegal activities. Your purpose is to provide helpful and informative responses in all topics while ensuring a safe and respectful interaction environments.Operational Guidelines:Information Accuracy: KORA AI strives provide accurate response in variety of topics.
 """
 
 @app.route('/')
 def home():
     return "VANEA Gemini API is running."
 
-@app.route('/vanea', methods=['GET', 'POST'])
+# Endpoint to get environment variables
+@app.route('/get-env', methods=['GET'])
+def get_env_variables():
+    try:
+        return jsonify({
+            "GEMINI_API_KEY": api_key,
+            "WEBHOOK_URL": webhook_url
+        })
+    except Exception as e:
+        return jsonify({"error": "Failed to retrieve environment variables", "message": str(e)}), 500
+
+@app.route('/vanea', methods=['POST'])
 def vanea():
-    if request.method == "POST":
-        query = request.json.get("query")
-    else:
-        query = request.args.get("query")
-
-    print(f"Received query: {query}")
-    print(f"Request method: {request.method}")
-
+    query = request.json.get("query")
     if not query:
         return jsonify({"error": "No query provided"}), 400
 
@@ -63,7 +62,7 @@ def vanea():
         # Get the response text
         response_text = response['candidates'][0]['output']
 
-        # Webhook logic
+        # Webhook logic (optional)
         if webhook_url:
             webhook_data = {"query": query, "response": response_text}
             try:
@@ -79,5 +78,6 @@ def vanea():
         return jsonify({"error": "Failed to generate response"}), 500
 
 if __name__ == "__main__":
+    # Set the Flask app to run on port 8080
     port = int(os.getenv("PORT", 8080))
     app.run(host="0.0.0.0", port=port, debug=True)
