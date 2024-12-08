@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request
 from flask_cors import CORS
 import os
 import google.generativeai as genai
@@ -50,16 +50,20 @@ def vanea():
     print(f"Request method: {request.method}")
 
     if not query:
-        return jsonify({"error": "No query provided"}), 400
+        return "No query provided", 400
 
     try:
         # Start chat with Gemini API
+        print("Sending message to Gemini API...")
         chat = genai.Chat(model="gemini-1.5-flash", temperature=0.3, top_p=0.95, top_k=64, max_output_tokens=8192)
         response = chat.send_message(f"{SYSTEM_INSTRUCTION}\n\nHuman: {query}")
 
+        # Log the raw response from Gemini
+        print(f"Gemini API response: {response}")
+
         # Check if response is valid
         if not response or 'candidates' not in response:
-            return jsonify({"error": "Invalid response from Gemini API"}), 500
+            return "Invalid response from Gemini API", 500
 
         # Get the response text
         response_text = response['candidates'][0]['output']
@@ -73,11 +77,11 @@ def vanea():
             except requests.exceptions.RequestException as err:
                 print(f"Webhook call failed: {err}")
 
-        return jsonify({"response": response_text})
+        return response_text  # Send back only the response from Gemini, no JSON wrapping.
 
     except Exception as e:
         print(f"Error generating response: {e}")
-        return jsonify({"error": "Failed to generate response"}), 500
+        return "Failed to generate response", 500
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
@@ -90,7 +94,7 @@ def webhook():
 
         # Validate the payload
         if not data or 'query' not in data or 'response' not in data:
-            return jsonify({"error": "Invalid payload"}), 400
+            return "Invalid payload", 400
 
         # Process the webhook data (example: log or save it)
         query = data['query']
@@ -100,11 +104,11 @@ def webhook():
         print(f"Response: {response}")
 
         # Respond to confirm receipt
-        return jsonify({"message": "Webhook received successfully"}), 200
+        return "Webhook received successfully", 200
 
     except Exception as e:
         print(f"Error processing webhook: {e}")
-        return jsonify({"error": "Failed to process webhook"}), 500
+        return "Failed to process webhook", 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=port, debug=True)
