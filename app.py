@@ -2,23 +2,20 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
 import google.generativeai as genai
-from dotenv import load_dotenv
 import requests
+from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
 api_key = os.getenv("GEMINI_API_KEY")
 webhook_url = os.getenv("WEBHOOK_URL")
-
-# Validate environment variables
-if not api_key:
-    raise ValueError("GEMINI_API_KEY is not set in the environment variables!")
+port = int(os.getenv("PORT", 8080))
 
 # Initialize the Flask app
 app = Flask(__name__)
 CORS(app)
 
-# Configure the Gemini API
+# Initialize Gemini model
 genai.configure(api_key=api_key)
 
 # System instruction
@@ -35,45 +32,44 @@ SYSTEM_INSTRUCTION = """
 3. Sensitive Topics: Avoid assisting with sensitive or harmful inquiries, including but not limited to violence, hate speech, or illegal activities.
 4. Policy Compliance: Adhere to AYANFE AI Terms and Policy, as established by VANEA.
 *Response Protocol for Sensitive Topics:*
-"When asked about sensitive or potentially harmful topics, you are programmed to prioritize safety and responsibility. As per AYANFE AI's Terms and Policy, you should not provide information or assistance that promotes or facilitates harmful or illegal activities. Your purpose is to provide helpful and informative responses in all topics while ensuring a safe and respectful interaction environments.Operational Guidelines:Information Accuracy: KORA AI strives provide accurate response in variety of topics.
+"When asked about sensitive or potentially harmful topics, you are programmed to prioritize safety and responsibility. As per AYANFE AI's Terms and Policy, you should not provide information or assistance that promotes or facilitates harmful or illegal activities. Your purpose is to provide helpful and informative responses in all topics while ensuring a safe and respectful interaction environments."
 """
 
 @app.route('/')
 def home():
-    return "VANEA Gemini API is running.", 200
+    return "VANEA Gemini API is running."
 
-@app.route('/vanea', methods=['POST'])
+@app.route('/vanea', methods=['GET', 'POST'])
 def vanea():
-    # Get the user query from the POST request
-    data = request.get_json()
-    query = data.get("query")
+    if request.method == "POST":
+        query = request.json.get("query")
+    else:
+        query = request.args.get("query")
+
+    print(f"Received query: {query}")
+    print(f"Request method: {request.method}")
 
     if not query:
         return jsonify({"error": "No query provided"}), 400
 
     try:
         # Start chat with Gemini API
-        chat = genai.Chat(
-            model="gemini-1.5-flash", 
-            temperature=0.3, 
-            top_p=0.95, 
-            top_k=64, 
-            max_output_tokens=8192
-        )
+        chat = genai.Chat(model="gemini-1.5-flash", temperature=0.3, top_p=0.95, top_k=64, max_output_tokens=8192)
         response = chat.send_message(f"{SYSTEM_INSTRUCTION}\n\nHuman: {query}")
 
-        # Validate response
+        # Check if response is valid
         if not response or 'candidates' not in response:
             return jsonify({"error": "Invalid response from Gemini API"}), 500
 
-        # Extract response text
+        # Get the response text
         response_text = response['candidates'][0]['output']
 
-        # Optional: Send to webhook
+        # Webhook logic
         if webhook_url:
             webhook_data = {"query": query, "response": response_text}
             try:
-                requests.post(webhook_url, json=webhook_data).raise_for_status()
+                webhook_response = requests.post(webhook_url, json=webhook_data)
+                webhook_response.raise_for_status()  # Check if the request was successful
             except requests.exceptions.RequestException as err:
                 print(f"Webhook call failed: {err}")
 
@@ -83,14 +79,32 @@ def vanea():
         print(f"Error generating response: {e}")
         return jsonify({"error": "Failed to generate response"}), 500
 
-@app.route('/get-env', methods=['GET'])
-def get_env_variables():
-    """Optional: Expose environment variables for debugging."""
-    return jsonify({
-        "GEMINI_API_KEY": api_key,
-        "WEBHOOK_URL": webhook_url or "Not configured"
-    })
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    try:
+        # Parse the incoming JSON payload
+        data = request.get_json()
+
+        # Log the received data for debugging
+        print(f"Received webhook data: {data}")
+
+        # Validate the payload
+        if not data or 'query' not in data or 'response' not in data:
+            return jsonify({"error": "Invalid payload"}), 400
+
+        # Process the webhook data (example: log or save it)
+        query = data['query']
+        response = data['response']
+
+        print(f"Query: {query}")
+        print(f"Response: {response}")
+
+        # Respond to confirm receipt
+        return jsonify({"message": "Webhook received successfully"}), 200
+
+    except Exception as e:
+        print(f"Error processing webhook: {e}")
+        return jsonify({"error": "Failed to process webhook"}), 500
 
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 8080))
     app.run(host="0.0.0.0", port=port, debug=True)
