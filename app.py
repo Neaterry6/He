@@ -5,20 +5,16 @@ import google.generativeai as genai
 import requests
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
+# Load environment variables
 load_dotenv()
 api_key = os.getenv("GEMINI_API_KEY")
 webhook_url = os.getenv("WEBHOOK_URL")
 
-# Validate API key
-if not api_key:
-    raise ValueError("GEMINI_API_KEY is not set in the environment variables.")
-
-# Initialize Flask app
+# Initialize the Flask app
 app = Flask(__name__)
 CORS(app)
 
-# Configure Gemini model
+# Initialize Gemini model
 genai.configure(api_key=api_key)
 
 # System instruction
@@ -44,40 +40,38 @@ def home():
 
 @app.route('/vanea', methods=['GET', 'POST'])
 def vanea():
-    # Get query from request
     query = request.json.get("query") if request.method == "POST" else request.args.get("query")
 
     if not query:
         return jsonify({"error": "No query provided"}), 400
 
     try:
-        # Initialize chat with Gemini model
-        chat = genai.Chat(
-            model="gemini-1.5-flash",
-            temperature=0.3,
-            top_p=0.95,
-            top_k=64,
-            max_output_tokens=8192
-        )
+        # Start chat with Gemini API
+        chat = genai.Chat(model="gemini-1.5-flash", temperature=0.3, top_p=0.95, top_k=64, max_output_tokens=8192)
         response = chat.send_message(f"{SYSTEM_INSTRUCTION}\n\nHuman: {query}")
+        
+        # Check if response is valid
+        if not response or 'candidates' not in response:
+            return jsonify({"error": "Invalid response from Gemini API"}), 500
 
-        # Extract the response output
-        output = response['candidates'][0]['output']
+        # Get the response text
+        response_text = response['candidates'][0]['output']
 
-        # Send response to webhook if URL is configured
+        # Webhook logic
         if webhook_url:
-            webhook_data = {"query": query, "response": output}
+            webhook_data = {"query": query, "response": response_text}
             try:
-                requests.post(webhook_url, json=webhook_data)
-            except Exception as err:
+                webhook_response = requests.post(webhook_url, json=webhook_data)
+                webhook_response.raise_for_status()  # Check if the request was successful
+            except requests.exceptions.RequestException as err:
                 print(f"Webhook call failed: {err}")
 
-        return jsonify({"response": output})
+        return jsonify({"response": response_text})
+
     except Exception as e:
         print(f"Error generating response: {e}")
         return jsonify({"error": "Failed to generate response"}), 500
 
 if __name__ == "__main__":
-    # Get port from environment or use default
     port = int(os.getenv("PORT", 8080))
     app.run(host="0.0.0.0", port=port, debug=True)
