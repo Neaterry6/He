@@ -5,16 +5,20 @@ import google.generativeai as genai
 import requests
 from dotenv import load_dotenv
 
-# Load environment variables
+# Load environment variables from .env file
 load_dotenv()
 api_key = os.getenv("GEMINI_API_KEY")
 webhook_url = os.getenv("WEBHOOK_URL")
 
-# Initialize the Flask app
+# Validate API key
+if not api_key:
+    raise ValueError("GEMINI_API_KEY is not set in the environment variables.")
+
+# Initialize Flask app
 app = Flask(__name__)
 CORS(app)
 
-# Initialize Gemini model
+# Configure Gemini model
 genai.configure(api_key=api_key)
 
 # System instruction
@@ -40,29 +44,40 @@ def home():
 
 @app.route('/vanea', methods=['GET', 'POST'])
 def vanea():
+    # Get query from request
     query = request.json.get("query") if request.method == "POST" else request.args.get("query")
 
     if not query:
         return jsonify({"error": "No query provided"}), 400
 
     try:
-        # Start chat and send query with system instruction
-        chat = genai.Chat(model="gemini-1.5-flash", temperature=0.3, top_p=0.95, top_k=64, max_output_tokens=8192)
+        # Initialize chat with Gemini model
+        chat = genai.Chat(
+            model="gemini-1.5-flash",
+            temperature=0.3,
+            top_p=0.95,
+            top_k=64,
+            max_output_tokens=8192
+        )
         response = chat.send_message(f"{SYSTEM_INSTRUCTION}\n\nHuman: {query}")
 
-        # Webhook logic
+        # Extract the response output
+        output = response['candidates'][0]['output']
+
+        # Send response to webhook if URL is configured
         if webhook_url:
-            webhook_data = {"query": query, "response": response['candidates'][0]['output']}
+            webhook_data = {"query": query, "response": output}
             try:
                 requests.post(webhook_url, json=webhook_data)
             except Exception as err:
                 print(f"Webhook call failed: {err}")
 
-        return jsonify({"response": response['candidates'][0]['output']})
+        return jsonify({"response": output})
     except Exception as e:
         print(f"Error generating response: {e}")
         return jsonify({"error": "Failed to generate response"}), 500
 
 if __name__ == "__main__":
+    # Get port from environment or use default
     port = int(os.getenv("PORT", 8080))
-    app.run(host="0.0.0.0", port=port, debug=True
+    app.run(host="0.0.0.0", port=port, debug=True)
