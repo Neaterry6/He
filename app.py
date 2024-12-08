@@ -14,10 +14,13 @@ webhook_url = os.getenv("WEBHOOK_URL")
 app = Flask(__name__)
 CORS(app)
 
-# Initialize Gemini model
-genai.configure(api_key=api_key)
+# Check if the API key is missing and initialize Gemini if present
+if not api_key:
+    print("Error: GEMINI_API_KEY is missing!")
+else:
+    genai.configure(api_key=api_key)
 
-# System instruction
+# System instruction for Gemini API
 SYSTEM_INSTRUCTION = """
 *System Name:* Your Name is VANEA and you are an AI Assistance
 *Creator:* Developed by AYANFE, a subsidiary of AYANFE AI, owned by AYANFE.
@@ -34,36 +37,37 @@ SYSTEM_INSTRUCTION = """
 "When asked about sensitive or potentially harmful topics, you are programmed to prioritize safety and responsibility. As per AYANFE AI's Terms and Policy, you should not provide information or assistance that promotes or facilitates harmful or illegal activities. Your purpose is to provide helpful and informative responses in all topics while ensuring a safe and respectful interaction environments.Operational Guidelines:Information Accuracy: KORA AI strives provide accurate response in variety of topics.
 """
 
-@app.route('/')
-def home():
-    return "VANEA Gemini API is running."
-
-@app.route('/vanea', methods=['GET', 'POST'])
+@app.route('/vanea', methods=['POST', 'GET'])
 def vanea():
+    # Debug: Log request method and incoming data
+    print(f"Request Method: {request.method}")
+    
     if request.method == "POST":
         query = request.json.get("query")
     else:
         query = request.args.get("query")
 
     print(f"Received query: {query}")
-    print(f"Request method: {request.method}")
-
+    
     if not query:
         return jsonify({"error": "No query provided"}), 400
 
     try:
         # Start chat with Gemini API
+        print("Sending message to Gemini API...")
         chat = genai.Chat(model="gemini-1.5-flash", temperature=0.3, top_p=0.95, top_k=64, max_output_tokens=8192)
         response = chat.send_message(f"{SYSTEM_INSTRUCTION}\n\nHuman: {query}")
 
-        # Check if response is valid
+        # Debug: Print the response
+        print(f"Gemini API response: {response}")
+
         if not response or 'candidates' not in response:
             return jsonify({"error": "Invalid response from Gemini API"}), 500
 
         # Get the response text
         response_text = response['candidates'][0]['output']
 
-        # Webhook logic
+        # Webhook logic (optional)
         if webhook_url:
             webhook_data = {"query": query, "response": response_text}
             try:
@@ -78,6 +82,7 @@ def vanea():
         print(f"Error generating response: {e}")
         return jsonify({"error": "Failed to generate response"}), 500
 
+# Ensure the app is only running when the script is executed directly
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8080))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    app.run(host="0.0.0.0", port=port, debug=True
