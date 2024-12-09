@@ -10,6 +10,10 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background-image: url('https://i.ibb.co/7C9DJVX/image.jpg');
+            background-size: cover;
+            background-position: center;
+            color: #fff;
         }
 
         .container {
@@ -19,14 +23,15 @@
         }
 
         .header {
-            background-color: #f2f2f2;
+            background-color: rgba(242, 242, 242, 0.7);
             padding: 10px 0;
             text-align: center;
         }
 
         .header h1 {
-            font-size: 2em;
+            font-size: 2.5em;
             margin: 0;
+            color: #333;
         }
 
         .nav {
@@ -57,6 +62,8 @@
             text-align: center;
             cursor: pointer;
             transition: transform 0.2s;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
         }
 
         .product-item:hover {
@@ -116,8 +123,9 @@
         footer {
             text-align: center;
             padding: 20px;
-            background-color: #f2f2f2;
+            background-color: rgba(242, 242, 242, 0.8);
             margin-top: 20px;
+            color: #333;
         }
 
         footer a {
@@ -129,6 +137,24 @@
 
         footer a:hover {
             text-decoration: underline;
+        }
+
+        .call-to-action {
+            text-align: center;
+            margin-top: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            color: #fff;
+            border-radius: 10px;
+        }
+
+        .call-to-action h2 {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .call-to-action p {
+            font-size: 1.2em;
         }
     </style>
 </head>
@@ -145,35 +171,41 @@
             <a href="#">Check Order</a>
         </div>
 
+        <div class="call-to-action">
+            <h2>Get Your Luxury Wear Now!</h2>
+            <p>If you're interested in any of the products, simply click on the WhatsApp link below to get in touch with us and place your order directly!</p>
+            <p><a href="https://wa.me/+2349068802730" target="_blank">Click here to contact us on WhatsApp</a></p>
+        </div>
+
         <div class="product-grid">
-            <div class="product-item" onclick="showProductModal('Luxury Outfit 1', 'https://i.ibb.co/6b1kBbf/image.jpg', '₦130,000')">
+            <div class="product-item" onclick="showProductModal('Luxury Outfit 1', 'https://i.ibb.co/6b1kBbf/image.jpg', '₦30,000 ($40)')">
                 <img src="https://i.ibb.co/6b1kBbf/image.jpg" alt="Luxury Outfit 1">
                 <p>Luxury Outfit 1</p>
-                <p class="price">₦130,000</p>
+                <p class="price">₦30,000 ($40)</p>
             </div>
 
-            <div class="product-item" onclick="showProductModal('Luxury Outfit 2', 'https://i.ibb.co/kDd3CC4/image.jpg', '₦130,000')">
+            <div class="product-item" onclick="showProductModal('Luxury Outfit 2', 'https://i.ibb.co/kDd3CC4/image.jpg', '₦30,000 ($40)')">
                 <img src="https://i.ibb.co/kDd3CC4/image.jpg" alt="Luxury Outfit 2">
                 <p>Luxury Outfit 2</p>
-                <p class="price">₦130,000</p>
+                <p class="price">₦30,000 ($40)</p>
             </div>
 
-            <div class="product-item" onclick="showProductModal('Luxury Outfit 3', 'https://i.ibb.co/DzbjNFb/image.jpg', '₦130,000')">
+            <div class="product-item" onclick="showProductModal('Luxury Outfit 3', 'https://i.ibb.co/DzbjNFb/image.jpg', '₦30,000 ($40)')">
                 <img src="https://i.ibb.co/DzbjNFb/image.jpg" alt="Luxury Outfit 3">
                 <p>Luxury Outfit 3</p>
-                <p class="price">₦130,000</p>
+                <p class="price">₦30,000 ($40)</p>
             </div>
 
-            <div class="product-item" onclick="showProductModal('Luxury Outfit 4', 'https://i.ibb.co/gDqyXXs/image.jpg', '₦130,000')">
+            <div class="product-item" onclick="showProductModal('Luxury Outfit 4', 'https://i.ibb.co/gDqyXXs/image.jpg', '₦30,000 ($40)')">
                 <img src="https://i.ibb.co/gDqyXXs/image.jpg" alt="Luxury Outfit 4">
                 <p>Luxury Outfit 4</p>
-                <p class="price">₦130,000</p>
+                <p class="price">₦30,000 ($40)</p>
             </div>
 
-            <div class="product-item" onclick="showProductModal('Luxury Outfit 5', 'https://i.ibb.co/p0PKYYc/image.jpg', '₦130,000')">
+            <div class="product-item" onclick="showProductModal('Luxury Outfit 5', 'https://i.ibb.co/p0PKYYc/image.jpg', '₦30,000 ($40)')">
                 <img src="https://i.ibb.co/p0PKYYc/image.jpg" alt="Luxury Outfit 5">
                 <p>Luxury Outfit 5</p>
-                <p class="price">₦130,000</p>
+                <p class="price">₦30,000 ($40)</p>
             </div>
         </div>
     </div>
@@ -185,6 +217,7 @@
         <h2 id="modalTitle"></h2>
         <img id="modalImage" src="" alt="">
         <p id="modalPrice"></p>
+        <button onclick="addToCart()">Add to Cart</button>
     </div>
 
     <footer>
@@ -206,6 +239,11 @@
         function closeModal() {
             document.getElementById('productModal').style.display = 'none';
             document.getElementById('overlay').style.display = 'none';
+        }
+
+        function addToCart() {
+            alert("This item has been added to your cart.");
+            closeModal();
         }
     </script>
 </body>
