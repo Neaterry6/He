@@ -6,240 +6,186 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Able Boys Luxury Wears</title>
     <style>
-        * {
+        body {
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            color: #fff;
-            background: url('https://i.ibb.co/7C9DJVX/image.jpg') no-repeat center center fixed;
-            background-size: cover;
-        }
-
-        header {
-            background: rgba(0, 0, 0, 0.8);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        header h1 {
-            font-size: 2rem;
-            color: #fff;
-        }
-
-        header nav {
-            display: flex;
-            gap: 1rem;
-        }
-
-        header nav a {
-            color: #fff;
-            text-decoration: none;
-            font-weight: bold;
-            padding: 0.5rem 1rem;
-            border: 2px solid #fff;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-        }
-
-        header nav a:hover {
-            background: #fff;
-            color: #000;
-        }
-
-        .hero {
-            text-align: center;
-            padding: 3rem;
-            background: rgba(0, 0, 0, 0.6);
-        }
-
-        .hero h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-        }
-
-        .products {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            padding: 2rem;
+        .container {
             max-width: 1200px;
             margin: 0 auto;
-            background: rgba(0, 0, 0, 0.8);
-            border-radius: 10px;
+            padding: 20px;
         }
 
-        .product {
-            background: #fff;
-            border-radius: 10px;
+        .header {
+            background-color: #f2f2f2;
+            padding: 10px 0;
             text-align: center;
-            padding: 1rem;
-            overflow: hidden;
         }
 
-        .product img {
-            width: 100%;
-            border-radius: 5px;
-            margin-bottom: 1rem;
+        .header h1 {
+            font-size: 2em;
+            margin: 0;
         }
 
-        .product-info {
-            color: #333;
+        .nav {
+            text-align: center;
+            margin-top: 10px;
         }
 
-        .product-info h3 {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .product-info .price {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-
-        .product-info .cart-btn {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background: #000;
-            color: #fff;
+        .nav a {
+            margin: 0 10px;
             text-decoration: none;
-            border-radius: 5px;
-            border: 2px solid #000;
+            color: #333;
             font-weight: bold;
-            transition: all 0.3s ease;
+            cursor: pointer;
         }
 
-        .product-info .cart-btn:hover {
-            background: #fff;
-            color: #000;
+        .product-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .product-item {
+            width: 200px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .product-item:hover {
+            transform: scale(1.05);
+        }
+
+        .product-item img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .product-item p {
+            margin: 10px 0;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .product-item .price {
+            color: #ff0000;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border: 1px solid #ccc;
+            padding: 20px;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 80%;
+            max-width: 500px;
+        }
+
+        .modal img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
         }
 
         footer {
             text-align: center;
-            padding: 2rem;
-            background: rgba(0, 0, 0, 0.8);
-            color: #fff;
+            padding: 20px;
+            background-color: #f2f2f2;
+            margin-top: 20px;
         }
 
         footer a {
-            color: #00aced;
+            color: #333;
             text-decoration: none;
-            margin: 0 1rem;
+            font-weight: bold;
+            margin: 0 10px;
         }
 
         footer a:hover {
             text-decoration: underline;
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <header>
-        <h1>Able Boys Luxury Wears</h1>
-        <nav>
+    <div class="container">
+        <div class="header">
+            <h1>Able Boys Luxury Wears</h1>
+        </div>
+
+        <div class="nav">
             <a href="#">Home</a>
             <a href="#">About Us</a>
             <a href="#">Check Order</a>
-        </nav>
-    </header>
+        </div>
 
-    <div class="hero">
-        <h2>Welcome to Able Boys Luxury Wears</h2>
-        <p>Explore the latest trends and timeless classics</p>
+        <div class="product-grid">
+            <div class="product-item" onclick="showProductModal('Luxury Outfit 1', 'https://i.ibb.co/6b1kBbf/image.jpg', '₦130,000')">
+                <img src="https://i.ibb.co/6b1kBbf/image.jpg" alt="Luxury Outfit 1">
+                <p>Luxury Outfit 1</p>
+                <p class="price">₦130,000</p>
+            </div>
+
+            <div class="product-item" onclick="showProductModal('Luxury Outfit 2', 'https://i.ibb.co/kDd3CC4/image.jpg', '₦130,000')">
+                <img src="https://i.ibb.co/kDd3CC4/image.jpg" alt="Luxury Outfit 2">
+                <p>Luxury Outfit 2</p>
+                <p class="price">₦130,000</p>
+            </div>
+
+            <div class="product-item" onclick="showProductModal('Luxury Outfit 3', 'https://i.ibb.co/DzbjNFb/image.jpg', '₦130,000')">
+                <img src="https://i.ibb.co/DzbjNFb/image.jpg" alt="Luxury Outfit 3">
+                <p>Luxury Outfit 3</p>
+                <p class="price">₦130,000</p>
+            </div>
+
+            <div class="product-item" onclick="showProductModal('Luxury Outfit 4', 'https://i.ibb.co/gDqyXXs/image.jpg', '₦130,000')">
+                <img src="https://i.ibb.co/gDqyXXs/image.jpg" alt="Luxury Outfit 4">
+                <p>Luxury Outfit 4</p>
+                <p class="price">₦130,000</p>
+            </div>
+
+            <div class="product-item" onclick="showProductModal('Luxury Outfit 5', 'https://i.ibb.co/p0PKYYc/image.jpg', '₦130,000')">
+                <img src="https://i.ibb.co/p0PKYYc/image.jpg" alt="Luxury Outfit 5">
+                <p>Luxury Outfit 5</p>
+                <p class="price">₦130,000</p>
+            </div>
+        </div>
     </div>
 
-    <section class="products">
-        <!-- Product 1 -->
-        <div class="product">
-            <img src="https://i.ibb.co/6b1kBbf/image.jpg" alt="Luxury Outfit 1">
-            <div class="product-info">
-                <h3>Luxury Outfit 1</h3>
-                <div class="price">₦130,000</div>
-                <a href="#" class="cart-btn">Add to Cart</a>
-            </div>
-        </div>
-
-        <!-- Product 2 -->
-        <div class="product">
-            <img src="https://i.ibb.co/kDd3CC4/image.jpg" alt="Luxury Outfit 2">
-            <div class="product-info">
-                <h3>Luxury Outfit 2</h3>
-                <div class="price">₦130,000</div>
-                <a href="#" class="cart-btn">Add to Cart</a>
-            </div>
-        </div>
-
-        <!-- Product 3 -->
-        <div class="product">
-            <img src="https://i.ibb.co/DzbjNFb/image.jpg" alt="Luxury Outfit 3">
-            <div class="product-info">
-                <h3>Luxury Outfit 3</h3>
-                <div class="price">₦130,000</div>
-                <a href="#" class="cart-btn">Add to Cart</a>
-            </div>
-        </div>
-
-        <!-- Product 4 -->
-        <div class="product">
-            <img src="https://i.ibb.co/gDqyXXs/image.jpg" alt="Luxury Outfit 4">
-            <div class="product-info">
-                <h3>Luxury Outfit 4</h3>
-                <div class="price">₦130,000</div>
-                <a href="#" class="cart-btn">Add to Cart</a>
-            </div>
-        </div>
-
-        <!-- Product 5 -->
-        <div class="product">
-            <img src="https://i.ibb.co/p0PKYYc/image.jpg" alt="Luxury Outfit 5">
-            <div class="product-info">
-                <h3>Luxury Outfit 5</h3>
-                <div class="price">₦130,000</div>
-                <a href="#" class="cart-btn">Add to Cart</a>
-            </div>
-        </div>
-
-        <!-- Product 6 -->
-        <div class="product">
-            <img src="https://i.ibb.co/fX9hs3x/image.jpg" alt="Luxury Outfit 6">
-            <div class="product-info">
-                <h3>Luxury Outfit 6</h3>
-                <div class="price">₦130,000</div>
-                <a href="#" class="cart-btn">Add to Cart</a>
-            </div>
-        </div>
-
-        <!-- Product 7 -->
-        <div class="product">
-            <img src="https://i.ibb.co/Jd6PmNr/image.jpg" alt="Luxury Outfit 7">
-            <div class="product-info">
-                <h3>Luxury Outfit 7</h3>
-                <div class="price">₦130,000</div>
-                <a href="#" class="cart-btn">Add to Cart</a>
-            </div>
-        </div>
-
-        <!-- Product 8 -->
-        <div class="product">
-            <img src="https://i.ibb.co/SrZDsSD/image.jpg" alt="Luxury Outfit 8">
-            <div class="product-info">
-                <h3>Luxury Outfit 8</h3>
-                <div class="price">₦130,000</div>
-                <a href="#" class="cart-btn">Add to Cart</a>
-            </div>
-        </div>
-    </section>
+    <!-- Modal -->
+    <div class="overlay" id="overlay" onclick="closeModal()"></div>
+    <div class="modal" id="productModal">
+        <span onclick="closeModal()" style="cursor: pointer; float: right;">&times;</span>
+        <h2 id="modalTitle"></h2>
+        <img id="modalImage" src="" alt="">
+        <p id="modalPrice"></p>
+    </div>
 
     <footer>
         <p>Contact Us:</p>
@@ -247,6 +193,21 @@
         <a href="https://wa.me/+2349068802730" target="_blank">WhatsApp</a>
         <p>&copy; 2024 Able Boys Luxury Wears. All Rights Reserved.</p>
     </footer>
+
+    <script>
+        function showProductModal(title, image, price) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalImage').src = image;
+            document.getElementById('modalPrice').innerText = "Price: " + price;
+            document.getElementById('productModal').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('productModal').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
+    </script>
 </body>
 
-                    </html>
+    </html>
