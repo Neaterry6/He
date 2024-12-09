@@ -7,67 +7,106 @@
     <title>Able Boys Luxury Wears</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* First Page Styling */
+        .first-page {
             background-image: url('https://i.ibb.co/7C9DJVX/image.jpg');
             background-size: cover;
             background-position: center;
-            color: #fff;
+            height: 100vh;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
+        .first-page-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1;
+        }
+
+        .first-page-content {
+            position: relative;
+            z-index: 2;
+            max-width: 700px;
             padding: 20px;
         }
 
+        .first-page h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .first-page p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        .next-button {
+            background-color: #ff0000;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .next-button:hover {
+            background-color: #d40000;
+        }
+
+        /* Main Page Styling */
+        .main-page {
+            display: none;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+            min-height: 100vh;
+        }
+
         .header {
-            background-color: rgba(242, 242, 242, 0.7);
-            padding: 10px 0;
             text-align: center;
+            padding: 20px;
+            background-color: #333;
+            color: white;
         }
 
         .header h1 {
-            font-size: 2.5em;
             margin: 0;
-            color: #333;
-        }
-
-        .nav {
-            text-align: center;
-            margin-top: 10px;
-        }
-
-        .nav a {
-            margin: 0 10px;
-            text-decoration: none;
-            color: #333;
-            font-weight: bold;
-            cursor: pointer;
+            font-size: 2em;
         }
 
         .product-grid {
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-between;
+            justify-content: center;
+            gap: 20px;
             margin-top: 20px;
         }
 
         .product-item {
-            width: 200px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.2s;
-            background-color: rgba(255, 255, 255, 0.7);
+            background-color: white;
+            border: 1px solid #ddd;
             border-radius: 10px;
-        }
-
-        .product-item:hover {
-            transform: scale(1.05);
+            text-align: center;
+            padding: 10px;
+            width: 200px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
         }
 
         .product-item img {
@@ -76,226 +115,124 @@
             border-radius: 5px;
         }
 
+        .product-item:hover {
+            transform: scale(1.05);
+        }
+
         .product-item p {
             margin: 10px 0;
-            font-size: 1.1em;
-            font-weight: bold;
         }
 
-        .product-item .price {
+        .price {
             color: #ff0000;
-            font-size: 1.2em;
-            margin-bottom: 10px;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            border: 1px solid #ccc;
-            padding: 20px;
-            z-index: 1000;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 80%;
-            max-width: 500px;
-        }
-
-        .modal img {
-            max-width: 100%;
-            height: auto;
-            margin-bottom: 20px;
-        }
-
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-        }
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            background-color: rgba(242, 242, 242, 0.8);
-            margin-top: 20px;
-            color: #333;
-        }
-
-        footer a {
-            color: #333;
-            text-decoration: none;
             font-weight: bold;
-            margin: 0 10px;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
         }
 
         .call-to-action {
             text-align: center;
-            margin-top: 20px;
-            background-color: rgba(0, 0, 0, 0.7);
+            margin: 20px 0;
             padding: 20px;
-            color: #fff;
-            border-radius: 10px;
-        }
-
-        .call-to-action h2 {
-            font-size: 2em;
-            margin-bottom: 15px;
-        }
-
-        .call-to-action p {
-            font-size: 1.2em;
-        }
-
-        .first-page {
-            text-align: center;
-            padding: 50px 20px;
-            background-image: url('https://i.ibb.co/7C9DJVX/image.jpg');
-            background-size: cover;
-            color: #fff;
-            border-radius: 10px;
-            margin-top: 50px;
-        }
-
-        .first-page h2 {
-            font-size: 2.5em;
-            margin-bottom: 20px;
-        }
-
-        .first-page p {
-            font-size: 1.2em;
-            margin-bottom: 20px;
-        }
-
-        .next-button {
             background-color: #333;
-            color: #fff;
-            padding: 10px 20px;
-            font-size: 1.2em;
-            cursor: pointer;
-            border: none;
+            color: white;
             border-radius: 5px;
-            transition: background-color 0.3s;
         }
 
-        .next-button:hover {
-            background-color: #ff0000;
+        .call-to-action a {
+            color: #ff0000;
+            text-decoration: none;
+            font-weight: bold;
         }
 
-        .hidden {
-            display: none;
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            margin-top: 20px;
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <!-- First Page (Welcome Page) -->
-        <div class="first-page" id="first-page">
-            <h2>Welcome to Able Boys Luxury Wears</h2>
-            <p>At Able Boys, we provide the finest luxury wear for modern men. Our clothes are carefully curated to reflect style, elegance, and comfort.</p>
-            <p>Click below to explore our stunning collection of luxury outfits.</p>
-            <button class="next-button" onclick="showMainPage()">Next</button>
+    <!-- First Page -->
+    <div class="first-page" id="first-page">
+        <div class="first-page-overlay"></div>
+        <div class="first-page-content">
+            <h1>Welcome to Able Boys Luxury Wears</h1>
+            <p>Your go-to destination for premium luxury clothing designed to elevate your style.</p>
+            <p>Click the button below to explore our stunning collection of outfits.</p>
+            <button class="next-button" onclick="showMainPage()">Explore Now</button>
         </div>
+    </div>
 
-        <!-- Main Page (Product Showcase) -->
-        <div class="header hidden" id="main-page">
+    <!-- Main Page -->
+    <div class="main-page" id="main-page">
+        <div class="header">
             <h1>Able Boys Luxury Wears</h1>
         </div>
 
-        <div class="call-to-action hidden" id="call-to-action">
+        <div class="call-to-action">
             <h2>Get Your Luxury Wear Now!</h2>
-            <p>If you're interested in any of the products, simply click on the WhatsApp link below to get in touch with us and place your order directly!</p>
-            <p><a href="https://wa.me/+2349068802730" target="_blank">Click here to contact us on WhatsApp</a></p>
+            <p>Contact us via WhatsApp to place your orders and explore more designs.</p>
+            <p><a href="https://wa.me/+2349068802730" target="_blank">Click here to message us on WhatsApp</a></p>
         </div>
 
-        <div class="product-grid hidden" id="product-grid">
-            <div class="product-item" onclick="showProductModal('Luxury Outfit 1', 'https://i.ibb.co/6b1kBbf/image.jpg', '₦30,000 ($40)')">
+        <div class="product-grid">
+            <!-- Product 1 -->
+            <div class="product-item">
                 <img src="https://i.ibb.co/6b1kBbf/image.jpg" alt="Luxury Outfit 1">
                 <p>Luxury Outfit 1</p>
                 <p class="price">₦30,000 ($40)</p>
             </div>
-            <div class="product-item" onclick="showProductModal('Luxury Outfit 2', 'https://i.ibb.co/kDd3CC4/image.jpg', '₦30,000 ($40)')">
+            <!-- Product 2 -->
+            <div class="product-item">
                 <img src="https://i.ibb.co/kDd3CC4/image.jpg" alt="Luxury Outfit 2">
                 <p>Luxury Outfit 2</p>
                 <p class="price">₦30,000 ($40)</p>
             </div>
-            <div class="product-item" onclick="showProductModal('Luxury Outfit 3', 'https://i.ibb.co/DzbjNFb/image.jpg', '₦30,000 ($40)')">
+            <!-- Product 3 -->
+            <div class="product-item">
                 <img src="https://i.ibb.co/DzbjNFb/image.jpg" alt="Luxury Outfit 3">
                 <p>Luxury Outfit 3</p>
                 <p class="price">₦30,000 ($40)</p>
             </div>
-            <div class="product-item" onclick="showProductModal('Luxury Outfit 4', 'https://i.ibb.co/gDqyXXs/image.jpg', '₦30,000 ($40)')">
+            <!-- Product 4 -->
+            <div class="product-item">
                 <img src="https://i.ibb.co/gDqyXXs/image.jpg" alt="Luxury Outfit 4">
                 <p>Luxury Outfit 4</p>
                 <p class="price">₦30,000 ($40)</p>
             </div>
-            <div class="product-item" onclick="showProductModal('Luxury Outfit 5', 'https://i.ibb.co/p0PKYYc/image.jpg', '₦30,000 ($40)')">
+            <!-- Product 5 -->
+            <div class="product-item">
                 <img src="https://i.ibb.co/p0PKYYc/image.jpg" alt="Luxury Outfit 5">
                 <p>Luxury Outfit 5</p>
                 <p class="price">₦30,000 ($40)</p>
             </div>
-            <!-- New Product Images -->
-            <div class="product-item" onclick="showProductModal('Luxury Outfit 6', 'https://i.ibb.co/Jd6PmNr/image.jpg', '₦30,000 ($40)')">
+            <!-- Product 6 -->
+            <div class="product-item">
                 <img src="https://i.ibb.co/Jd6PmNr/image.jpg" alt="Luxury Outfit 6">
                 <p>Luxury Outfit 6</p>
                 <p class="price">₦30,000 ($40)</p>
             </div>
-            <div class="product-item" onclick="showProductModal('Luxury Outfit 7', 'https://i.ibb.co/SrZDsSD/image.jpg', '₦30,000 ($40)')">
+            <!-- Product 7 -->
+            <div class="product-item">
                 <img src="https://i.ibb.co/SrZDsSD/image.jpg" alt="Luxury Outfit 7">
                 <p>Luxury Outfit 7</p>
                 <p class="price">₦30,000 ($40)</p>
             </div>
         </div>
 
-        <!-- Product Modal -->
-        <div class="overlay" id="overlay" onclick="closeModal()"></div>
-        <div class="modal" id="modal">
-            <h2 id="modal-title">Product Title</h2>
-            <img id="modal-img" src="" alt="Product Image">
-            <p id="modal-price">Product Price</p>
-            <p id="modal-description">Description of the product goes here.</p>
-            <button class="next-button" onclick="closeModal()">Close</button>
-        </div>
-
-        <!-- Footer Section -->
         <footer>
-            <p>&copy; 2024 Able Boys Luxury Wears. All rights reserved.</p>
+            <p>&copy; 2024 Able Boys Luxury Wears. All Rights Reserved.</p>
         </footer>
     </div>
 
     <script>
         function showMainPage() {
-            document.getElementById('first-page').classList.add('hidden');
-            document.getElementById('main-page').classList.remove('hidden');
-            document.getElementById('product-grid').classList.remove('hidden');
-            document.getElementById('call-to-action').classList.remove('hidden');
-        }
-
-        function showProductModal(title, imgSrc, price) {
-            document.getElementById('modal-title').textContent = title;
-            document.getElementById('modal-img').src = imgSrc;
-            document.getElementById('modal-price').textContent = price;
-            document.getElementById('modal-description').textContent = "This is a premium quality product that fits all your needs.";
-            document.getElementById('modal').style.display = 'block';
-            document.getElementById('overlay').style.display = 'block';
-        }
-
-        function closeModal() {
-            document.getElementById('modal').style.display = 'none';
-            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('first-page').style.display = 'none';
+            document.getElementById('main-page').style.display = 'block';
         }
     </script>
 </body>
 
-    </html>
+                </html>
